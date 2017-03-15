@@ -5,6 +5,8 @@ RUN tar zxvf mysql-5.7.16-linux-glibc2.5-x86_64.tar.gz
 RUN mv mysql-5.7.16-linux-glibc2.5-x86_64 mysql
 RUN mkdir /mysql/sql_data
 RUN rm -rf mysql-5.7.16*.*
+RUN echo "mysql:x:1:1:mysql:/:/bin/sh" >> /etc/passwd
+RUN echo "mysql:x:1:" >> /etc/group
 EXPOSE 3306
 RUN echo "[server]" > /mysql/my.cnf
 RUN echo "user=mysql" >> /mysql/my.cnf
@@ -15,7 +17,7 @@ RUN echo "update mysql.user set authentication_string=password('rootpass') , pas
 RUN echo "update mysql.user set  host='%' where user='root';" >> /mysql/pass.sql
 RUN echo "flush privileges;" >> /mysql/pass.sql
 RUN echo "#!/bin/sh" > /mysql/start.sh
-RUN echo "cd /mysql;./bin/mysqld --basedir=/mysql --datadir=/mysql/sql_data --initialize-insecure" >> /mysql/start.sh
+RUN echo "cd /mysql;./bin/mysqld --user=mysql --basedir=/mysql --datadir=/mysql/sql_data --initialize-insecure" >> /mysql/start.sh
 RUN echo "cd /mysql;./bin/mysqld_safe --defaults-file=/mysql/my.cnf  --init-file=/mysql/pass.sql &" >> /mysql/start.sh
 RUN echo "while true; do" >> /mysql/start.sh
 RUN echo "sleep 5" >> /mysql/start.sh
@@ -26,4 +28,6 @@ COPY libcrypt.so.1 /lib
 COPY libstdc++.so.6 /lib 
 COPY libgcc_s.so.1 /lib 
 COPY libfreebl3.so /lib 
+RUN  chmod 1777 /tmp
+
 ENTRYPOINT /mysql/start.sh
