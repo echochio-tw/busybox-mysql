@@ -7,7 +7,16 @@ RUN mkdir /mysql/sql_data
 RUN rm -rf mysql-5.7.16*.*
 RUN echo "mysql:x:1:1:mysql:/:/bin/sh" >> /etc/passwd
 RUN echo "mysql:x:1:" >> /etc/group
+COPY /lib/libaio.so.1 /lib
+COPY /lib/libcrypt.so.1 /lib
+COPY /lib/libstdc++.so.6 /lib
+COPY /lib/libgcc_s.so.1 /lib
+COPY /lib/libfreebl3.so /lib
+COPY /lib/libncurses.so.5 /lib
+RUN  chmod 1777 /tmp
+RUN chown -R mysql:mysql /mysql
 EXPOSE 3306
+USER mysql
 RUN echo "[server]" > /mysql/my.cnf
 RUN echo "user=mysql" >> /mysql/my.cnf
 RUN echo "basedir=/mysql/mysql" >> /mysql/my.cnf
@@ -23,11 +32,4 @@ RUN echo "while true; do" >> /mysql/start.sh
 RUN echo "sleep 5" >> /mysql/start.sh
 RUN echo "done" >> /mysql/start.sh
 RUN chmod +x /mysql/start.sh
-COPY libaio.so.1 /lib 
-COPY libcrypt.so.1 /lib 
-COPY libstdc++.so.6 /lib 
-COPY libgcc_s.so.1 /lib 
-COPY libfreebl3.so /lib 
-RUN  chmod 1777 /tmp
-
 ENTRYPOINT /mysql/start.sh
