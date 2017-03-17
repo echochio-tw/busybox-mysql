@@ -29,7 +29,7 @@ RUN echo "update mysql.user set authentication_string=password('rootpass') , pas
     echo "flush privileges;" >> /mysql/pass.sql
 
 RUN echo "#!/bin/sh" > /mysql/start.sh; \
-    echo "/mysql/bin/mysqld_safe --defaults-file=/mysql/my.cnf  --init-file=/mysql/pass.sql &" >> /mysql/start.sh ; \
+    echo "cd /mysql;./bin/mysqld_safe --defaults-file=/mysql/my.cnf  --init-file=/mysql/pass.sql &" >> /mysql/start.sh ; \
     echo "while true; do" >> /mysql/start.sh; \
     echo "sleep 5" >> /mysql/start.sh; \
     echo "done" >> /mysql/start.sh
