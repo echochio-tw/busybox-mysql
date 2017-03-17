@@ -26,7 +26,7 @@ RUN echo "update mysql.user set authentication_string=password('rootpass') , pas
 RUN echo "update mysql.user set  host='%' where user='root';" >> /mysql/pass.sql
 RUN echo "flush privileges;" >> /mysql/pass.sql
 RUN echo "#!/bin/sh" > /mysql/start.sh
-RUN echo "cd /mysql;./bin/mysqld --user=mysql --basedir=/mysql --datadir=/mysql/sql_data --initialize-insecure" >> /mysql/start.sh
+RUN echo "cd /mysql;./bin/mysqld --defaults-file=/mysql/my.cnf --initialize-insecure" >> /mysql/start.sh
 RUN echo "cd /mysql;./bin/mysqld_safe --defaults-file=/mysql/my.cnf  --init-file=/mysql/pass.sql &" >> /mysql/start.sh
 RUN echo "while true; do" >> /mysql/start.sh
 RUN echo "sleep 5" >> /mysql/start.sh
