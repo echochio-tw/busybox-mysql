@@ -17,19 +17,22 @@ RUN  chmod 1777 /tmp
 RUN chown -R mysql:mysql /mysql
 EXPOSE 3306
 USER mysql
-RUN echo "[server]" > /mysql/my.cnf
-RUN echo "user=mysql" >> /mysql/my.cnf
-RUN echo "basedir=/mysql/mysql" >> /mysql/my.cnf
-RUN echo "datadir=/mysql/sql_data" >> /mysql/my.cnf
-RUN echo "port=3306" >> /mysql/my.cnf
-RUN echo "update mysql.user set authentication_string=password('rootpass') , password_expired='N' where user='root';" > /mysql/pass.sql
-RUN echo "update mysql.user set  host='%' where user='root';" >> /mysql/pass.sql
-RUN echo "flush privileges;" >> /mysql/pass.sql
-RUN echo "#!/bin/sh" > /mysql/start.sh
-RUN echo "cd /mysql;./bin/mysqld --defaults-file=/mysql/my.cnf --initialize-insecure" >> /mysql/start.sh
-RUN echo "cd /mysql;./bin/mysqld_safe --defaults-file=/mysql/my.cnf  --init-file=/mysql/pass.sql &" >> /mysql/start.sh
-RUN echo "while true; do" >> /mysql/start.sh
-RUN echo "sleep 5" >> /mysql/start.sh
-RUN echo "done" >> /mysql/start.sh
+
+RUN echo "[server]" > /mysql/my.cnf; \
+    echo "user=mysql" >> /mysql/my.cnf; \
+    echo "basedir=/mysql/mysql" >> /mysql/my.cnf; \
+    echo "datadir=/mysql/sql_data" >> /mysql/my.cnf; \
+    echo "port=3306" >> /mysql/my.cnf
+
+RUN echo "update mysql.user set authentication_string=password('rootpass') , password_expired='N' where user='root';" > /mysql/pass.sql; \
+    echo "update mysql.user set  host='%' where user='root';" >> /mysql/pass.sql; \
+    echo "flush privileges;" >> /mysql/pass.sql
+
+RUN echo "#!/bin/sh" > /mysql/start.sh; \
+    echo "/mysql/bin/mysqld_safe --defaults-file=/mysql/my.cnf  --init-file=/mysql/pass.sql &" >> /mysql/start.sh ; \
+    echo "while true; do" >> /mysql/start.sh; \
+    echo "sleep 5" >> /mysql/start.sh; \
+    echo "done" >> /mysql/start.sh
 RUN chmod +x /mysql/start.sh
+RUN /mysql/bin/mysqld --defaults-file=/mysql/my.cnf --initialize-insecure
 ENTRYPOINT /mysql/start.sh
