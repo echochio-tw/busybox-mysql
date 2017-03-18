@@ -39,6 +39,6 @@ USER root
 RUN echo "rhuser:x:1034860000:1034860000:rhuser:/:/bin/sh" >> /etc/passwd
 RUN echo "rhuser:x:1034860000:" >> /etc/group
 RUN chown -R mysql:1034860000 /mysql/sql_data
-RUN chmod -R 775 /mysql/sql_data
+RUN chmod -R 1777 /mysql/sql_data
 USER mysql
 ENTRYPOINT /mysql/start.sh
