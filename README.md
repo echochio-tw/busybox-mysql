@@ -25,3 +25,10 @@ Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
 
 MySQL [(none)]>
 ```
+
+openshift docker use it
+
+pull from docker ......
+docker.io/echochio/mysql
+
+
